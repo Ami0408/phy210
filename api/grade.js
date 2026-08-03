@@ -577,7 +577,15 @@ module.exports = async function handler(req, res) {
       lastText = text;
       grade = coerceGrade(extractJson(text), marks);
 
+      /* Set GRADER_DEBUG=1 to log exactly what the model sent back — the
+         only practical way to diagnose a model that changes its shape. */
+      if (envVal('GRADER_DEBUG')) {
+        console.error('[grade] raw reply (attempt %d, finish_reason=%s):\n%s',
+          attempt + 1, finishReason || 'n/a', text);
+      }
+
       if (!grade) {
+
         console.error('[grade] unparseable reply (attempt %d, finish_reason=%s): %s',
           attempt + 1, finishReason || 'n/a', String(text || '').slice(0, 400));
       }
